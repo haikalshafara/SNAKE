@@ -1751,6 +1751,13 @@ function draw() {
         ctx.stroke();
     }
 
+    /* Garis tepi putus-putus sebagai penanda arena tembus tembok */
+    ctx.save();
+    ctx.strokeStyle = "rgba(56, 189, 248, 0.35)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 6]);
+    ctx.strokeRect(1, 1, cols * cell - 2, rows * cell - 2);
+    ctx.restore();
 
     /* Obstacles */
 
@@ -1960,21 +1967,17 @@ function move() {
     const head = {
 
         x:
-            game.snake[0].x +
-            game.dir.x,
+            (game.snake[0].x +
+                game.dir.x +
+                game.cols) %
+            game.cols,
 
         y:
-            game.snake[0].y +
-            game.dir.y
+            (game.snake[0].y +
+                game.dir.y +
+                game.rows) %
+            game.rows
     };
-
-
-    const hitWall =
-        head.x < 0 ||
-        head.x >= game.cols ||
-        head.y < 0 ||
-        head.y >= game.rows;
-
 
     const hitObstacle =
         game.obstacles.some(
@@ -1994,7 +1997,7 @@ function move() {
 
 
     if (
-        hitWall ||
+
         hitObstacle ||
         hitSnake
     ) {
