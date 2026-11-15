@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SNAKESIP — Serious Game Subnetting TKJ/TJKT</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap 5.3 & Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Ambient Cyber Grid & Lighting -->
+<div class="bg-cyber-grid" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-1" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-2" aria-hidden="true"></div>
+
+<!-- Floating Non-Blocking Toast Container -->
+<div id="gameToastContainer" class="game-toast-container" aria-live="polite"></div>
+
+<div class="app">
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+    <header class="topbar">
+
+        <div class="brand d-flex align-items-center gap-3">
+            <div class="brand-logo-box">
+                <span class="brand-emoji">🐍</span>
+            </div>
+            <div class="d-flex flex-column">
+                <div class="brand-title">SNAKE<span class="accent">SIP</span></div>
+                <span class="brand-sub">SUBNETTING INTERACTIVE LAB</span>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 gap-sm-3">
+            <!-- Tombol akses guru -->
+            <button
+                id="teacherAccessBtn"
+                class="btn btn-soft py-2 px-3 d-flex align-items-center gap-2"
+                onclick="promptTeacherAccess()"
+                title="Akses Mode Guru"
+            >
+                <i class="bi bi-shield-lock-fill text-cyan"></i>
+                <span><span class="d-none d-sm-inline">Mode </span>Guru</span>
+            </button>
+
+            <div class="top-user px-3 py-2 rounded-pill d-flex align-items-center gap-2" id="topUserWrap">
+                <span class="status-pulse-dot"></span>
+                <span id="topUser">Serious Learning Game</span>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         LOGIN SCREEN
+    ====================================================== -->
+    <section id="loginScreen" class="screen">
+
+        <div class="hero align-items-center">
+
+            <!-- Left Column: Intro & Identity Form -->
+            <div class="hero-left">
+
+                <div class="eyebrow-pill mb-3">
+                    <span class="status-pulse-dot"></span>
+                    <span>PORTAL BELAJAR SISWA • KELAS X TKJ / TJKT</span>
+                </div>
+
+                <h1 class="hero-display mb-3">
+                    Kuasai <span class="text-gradient-cyan">Subnetting</span><br>
+                    Sambil Bermain.
+                </h1>
+
+                <p class="hero-lead muted mb-4">
+                    Media pembelajaran interaktif konsep IPv4 &amp; Subnetting
+                    berbasis permainan arcade Snake, kuis adaptif, sistem XP,
+                    Combo, dan progres level bertahap.
+                </p>
+
+                <!-- Feature Highlights Pills -->
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="feature-chip"><i class="bi bi-joystick text-cyan"></i> 15 Level Progresif</span>
+                    <span class="feature-chip"><i class="bi bi-cpu text-green"></i> 4 Tipe Soal Jaringan</span>
+                    <span class="feature-chip"><i class="bi bi-lightning-charge-fill text-yellow"></i> Power-Up &amp; Combo</span>
+                </div>
+
+                <div class="cardx glass-elevated p-4">
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="icon-badge-sm">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-white">Identitas Sesi Belajar</h6>
+                            <small class="muted">Masukkan nama dan kelas untuk menyimpan progres belajarmu</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+
+                        <!-- Nama -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="loginName">
+                                Nama Lengkap <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-person input-icon"></i>
+                                <input
+                                    id="loginName"
+                                    class="form-control form-control-modern"
+                                    type="text"
+                                    placeholder="Contoh: Budi Santoso"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </div>
+                            <small id="nameError" class="text-danger hidden mt-1 d-block">
+                                Nama wajib diisi.
+                            </small>
+                        </div>
+
+                        <!-- Kelas -->
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="loginClass">
+                                Kelas <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-mortarboard input-icon"></i>
+                                <input
+                                    id="loginClass"
+                                    class="form-control form-control-modern"
+                                    type="text"
+                                    placeholder="Contoh: X TKJ 1"
+                                    required
+                                >
+                            </div>
+                            <small id="classError" class="text-danger hidden mt-1 d-block">
+                                Kelas wajib diisi.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="btn-main mt-3 py-2 px-4 fw-bold d-inline-flex align-items-center justify-content-center gap-2"
+                        type="button"
+                        style="font-size: 13.5px; border-radius: 10px; letter-spacing: 0.2px;"
+                        onclick="startLearning()"
+                    >
+                        <span>Masuk Dashboard &amp; Mulai Belajar</span>
+                        <i class="bi bi-arrow-right-circle-fill"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Right Column: Live Interactive Arena Preview Card -->
+            <div class="hero-right">
+                <div class="cardx hero-preview-card p-0 overflow-hidden">
+
+                    <!-- Window Header -->
+                    <div class="preview-window-bar d-flex align-items-center justify-content-between px-3 py-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="win-dot win-red"></span>
+                            <span class="win-dot win-yellow"></span>
+                            <span class="win-dot win-green"></span>
+                        </div>
+                        <span class="mono-tag">subnet-arena.live</span>
+                        <span class="badge-live-mini">LIVE PREVIEW</span>
+                    </div>
+
+                    <!-- Live Animated Mini Canvas -->
+                    <div class="p-3 pb-2">
+                        <div class="hero-canvas-frame">
+                            <canvas id="heroSnakeCanvas" width="400" height="210"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Game Mechanics Legend -->
+                    <div class="px-4 pb-4 pt-2">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h5 class="fw-bold mb-0 text-white">Learn. Play. Subnet.</h5>
+                            <span class="text-cyan small fw-semibold mono-tag">IPv4 • CIDR</span>
+                        </div>
+                        <p class="muted mb-3" style="font-size: 13.5px; line-height: 1.6;">
+                            Kendalikan Snake untuk mengumpulkan <b>Food</b>, ambil <b>Question Item</b>
+                            untuk memecahkan tantangan Subnetting, dan aktifkan <b>Power-Up</b>.
+                        </p>
+
+                        <div class="legend-grid">
+                            <div class="legend-item">
+                                <span class="legend-emoji">🍎</span>
+                                <div>
+                                    <b>Food</b>
+                                    <small>+50 Score &amp; Combo</small>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-emoji">❓</span>
+                                <div>
+                                    <b>Quiz Item</b>
+                                    <small>+100 Score &amp; +20 XP</small>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-emoji">🛡️</span>
+                                <div>
+                                    <b>Power-Up</b>
+                                    <small>Shield, Freeze, 2x XP</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DASHBOARD SISWA
+    ====================================================== -->
+    <section id="dashboardScreen" class="screen hidden">
+
+        <!-- Modern Dashboard Banner -->
+        <div class="cardx dashboard-hero-banner mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="eyebrow-pill mb-2">
+                        <i class="bi bi-controller text-cyan"></i>
+                        <span>PLAYER COMMAND DASHBOARD</span>
+                    </div>
+
+                    <h2 class="fw-bold mb-1" style="font-size: clamp(24px, 3vw, 32px);">
+                        Halo, <span id="dashName" class="text-gradient-cyan"></span> 👋
+                    </h2>
+
+                    <p class="muted mb-0">
+                        Pelajari modul konsep Subnetting dan taklukkan seluruh 15 level tantangan.
+                    </p>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button
+                        class="btn-soft d-flex align-items-center gap-2"
+                        onclick="showScreen('loginScreen')"
+                        title="Ganti Identitas Siswa"
+                    >
+                        <i class="bi bi-person-gear"></i>
+                        <span class="d-none d-sm-inline">Ganti Siswa</span>
+                    </button>
+                    <button
+                        class="btn-main d-flex align-items-center gap-2"
+                        onclick="showResults()"
+                    >
+                        <i class="bi bi-trophy-fill"></i>
+                        <span>Hasil Belajar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Statistik KPI -->
+        <div class="statgrid mb-4">
+
+            <div class="stat stat-modern stat-cyan">
+                <div class="d-flex align-items-center justify-content-between">
+                    <small>TOTAL SCORE</small>
+                    <span class="stat-icon-pill cyan"><i class="bi bi-star-fill"></i></span>
+                </div>
+                <b id="dScore" class="mono-num">0</b>
+                <span class="stat-footnote">Akumulasi poin permainan</span>
+            </div>
+
+            <div class="stat stat-modern stat-green">
+                <div class="d-flex align-items-center justify-content-between">
+                    <small>EXPERIENCE (XP)</small>
+                    <span class="stat-icon-pill green"><i class="bi bi-lightning-charge-fill"></i></span>
+                </div>
+                <b id="dXp" class="mono-num">0</b>
+                <span class="stat-footnote">Poin penguasaan materi</span>
+            </div>
+
+            <div class="stat stat-modern stat-purple">
+                <div class="d-flex align-items-center justify-content-between">
+                    <small>LEVEL TERTINGGI</small>
+                    <span class="stat-icon-pill purple"><i class="bi bi-flag-fill"></i></span>
+                </div>
+                <b id="dLevel" class="mono-num">01</b>
+                <span class="stat-footnote">Dari 15 level tersedia</span>
+            </div>
+
+        </div>
+
+
+        <!-- Materi -->
+        <div class="cardx mb-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="icon-badge-sm"><i class="bi bi-book-half"></i></div>
+                    <h4 class="mb-0 fw-bold">Materi Pembelajaran Subnetting</h4>
+                </div>
+                <span class="mono-tag">3 MODUL INTI</span>
+            </div>
+
+            <p class="muted mb-3">
+                Pelajari ringkasan konsep sebelum menyelesaikan tantangan pada setiap World.
+            </p>
+
+            <div class="material-grid" id="materials"></div>
+
+        </div>
+
+
+        <!-- World & Level -->
+        <div class="cardx">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="icon-badge-sm"><i class="bi bi-globe-americas"></i></div>
+                    <h4 class="mb-0 fw-bold">World &amp; Level Progression</h4>
+                </div>
+                <span class="muted small">
+                    Selesaikan setiap level untuk membuka tantangan berikutnya.
+                </span>
+            </div>
+
+            <!-- Overall Progress Bar -->
+            <div class="progression-bar-wrap mb-4">
+                <div class="d-flex justify-content-between small mb-1">
+                    <span class="muted">Progres Terbuka</span>
+                    <span id="unlockedProgressLabel" class="text-cyan fw-semibold mono-tag">1 / 15 Level</span>
+                </div>
+                <div class="progress">
+                    <div id="unlockedProgressBar" class="progress-bar" style="width: 7%;"></div>
+                </div>
+            </div>
+
+            <div class="worlds" id="worlds"></div>
+
+            <div id="levelsPanel" class="mt-4 pt-3 border-top border-secondary border-opacity-25"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MATERIAL SCREEN
+    ====================================================== -->
+    <section id="materialScreen" class="screen hidden">
+
+        <div class="material-reader-wrap">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <button
+                    class="btn-soft d-flex align-items-center gap-2"
+                    onclick="goDashboard()"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Kembali ke Dashboard</span>
+                </button>
+                <span class="mono-tag">MODUL PEMBELAJARAN • TKJ/TJKT</span>
+            </div>
+
+            <div class="cardx glass-elevated">
+
+                <span class="eyebrow-pill mb-2">
+                    <i class="bi bi-journal-code text-cyan"></i>
+                    <span>MATERI SUBNETTING</span>
+                </span>
+
+                <h2 id="materialTitle" class="mt-2 fw-bold"></h2>
+
+                <div id="materialBody" class="mt-4 material-content-prose"></div>
+
+                <hr class="my-4 border-secondary border-opacity-25">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <small class="muted">Siap menguji pemahamanmu di arena permainan?</small>
+                    <button
+                        class="btn-main d-flex align-items-center gap-2"
+                        onclick="openLevelFromMaterial()"
+                    >
+                        <i class="bi bi-play-fill fs-5"></i>
+                        <span>Mulai Level Terkait</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         GAME SCREEN
+    ====================================================== -->
+    <section id="gameScreen" class="screen hidden">
+
+        <div id="gameWrap">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="eyebrow-pill mb-0" id="gameWorld">WORLD 1</span>
+                        <span class="mono-tag">ARENA MODE</span>
+                    </div>
+
+                    <h3 class="mt-1 mb-0 fw-bold" id="gameLevelName">
+                        Level 1
+                    </h3>
+                </div>
+
+                <button
+                    class="btn-soft d-flex align-items-center gap-2"
+                    onclick="quitGame()"
+                >
+                    <i class="bi bi-box-arrow-left text-danger"></i>
+                    <span>Keluar Arena</span>
+                </button>
+
+            </div>
+
+
+            <!-- HUD -->
+            <div class="hud">
+
+                <div class="box hud-score">
+                    <small>SCORE</small>
+                    <b id="hScore" class="mono-num">0</b>
+                </div>
+
+                <div class="box hud-xp">
+                    <small>XP</small>
+                    <b id="hXp" class="mono-num">0</b>
+                </div>
+
+                <div class="box">
+                    <small>LEVEL</small>
+                    <b id="hLevel" class="mono-num">01</b>
+                </div>
+
+                <div class="box">
+                    <small>LIFE</small>
+                    <b id="hLife">❤️❤️❤️</b>
+                </div>
+
+                <div class="box hud-combo">
+                    <small>COMBO</small>
+                    <b id="hCombo" class="mono-num">x0</b>
+                </div>
+
+                <div class="box hud-question">
+                    <small>QUESTION</small>
+                    <b id="hQuestion" class="mono-num">0/5</b>
+                </div>
+
+                <div class="box hud-time">
+                    <small>TIME</small>
+                    <b id="hTime" class="mono-num">02:30</b>
+                </div>
+
+            </div>
+
+
+            <!-- Canvas -->
+            <div class="canvas-shell">
+
+                <canvas
+                    id="gameCanvas"
+                    width="900"
+                    height="540"
+                ></canvas>
+
+            </div>
+
+
+            <!-- Mobile Controls -->
+            <div class="controls-mobile">
+
+                <button class="btn-soft up" data-dir="up" aria-label="Atas">
+                    <i class="bi bi-caret-up-fill"></i>
+                </button>
+
+                <button class="btn-soft left" data-dir="left" aria-label="Kiri">
+                    <i class="bi bi-caret-left-fill"></i>
+                </button>
+
+                <button class="btn-soft down" data-dir="down" aria-label="Bawah">
+                    <i class="bi bi-caret-down-fill"></i>
+                </button>
+
+                <button class="btn-soft right" data-dir="right" aria-label="Kanan">
+                    <i class="bi bi-caret-right-fill"></i>
+                </button>
+
+            </div>
+
+
+            <!-- Game Action -->
+            <div class="game-actions align-items-center">
+
+                <div class="objective-pill d-flex align-items-center gap-2">
+                    <i class="bi bi-bullseye text-cyan"></i>
+                    <span class="muted" id="objective">
+                        Objective: kumpulkan Food dan jawab Question Item Subnetting.
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="muted small d-none d-md-inline">Kontrol: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / Panah</span>
+                    <button
+                        class="btn-soft d-flex align-items-center gap-2"
+                        onclick="pauseGame()"
+                    >
+                        <i class="bi bi-pause-circle"></i>
+                        <span>Pause</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS
+    ====================================================== -->
+    <section id="resultsScreen" class="screen hidden">
+
+        <div class="cardx glass-elevated text-center">
+
+            <span class="eyebrow-pill">
+                <i class="bi bi-award-fill text-yellow"></i>
+                <span>LEARNING PROGRESS REPORT</span>
+            </span>
+
+            <h1 class="mt-3 fw-bold" style="font-size: clamp(32px, 5vw, 48px);">
+                🎓 Laporan Hasil Belajar
+            </h1>
+            <p class="muted mb-0">Ringkasan performa skor, akurasi jawaban, dan pencapaian badge.</p>
+
+
+            <div class="statgrid mt-4">
+
+                <div class="stat stat-modern stat-cyan text-start">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <small>TOTAL SCORE</small>
+                        <span class="stat-icon-pill cyan"><i class="bi bi-star-fill"></i></span>
+                    </div>
+                    <b id="rScore" class="mono-num">-</b>
+                    <span class="stat-footnote">Skor keseluruhan sesi</span>
+                </div>
+
+                <div class="stat stat-modern stat-green text-start">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <small>ACCURACY</small>
+                        <span class="stat-icon-pill green"><i class="bi bi-bullseye"></i></span>
+                    </div>
+                    <b id="rAcc" class="mono-num">-</b>
+                    <span class="stat-footnote">Ketepatan menjawab soal</span>
+                </div>
+
+            </div>
+
+
+            <div class="cardx mt-4 text-start" style="background: rgba(7, 15, 28, 0.65);">
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h4 class="mb-0 fw-bold">🏆 Achievement &amp; Badges</h4>
+                    <span class="mono-tag">6 BADGES</span>
+                </div>
+
+                <div id="achievements" class="achievement-grid"></div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+                <button
+                    class="btn-main d-flex align-items-center gap-2"
+                    onclick="goDashboard()"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Kembali ke Dashboard</span>
+                </button>
+
+                <button
+                    class="btn-soft d-flex align-items-center gap-2"
+                    onclick="resetProgress()"
+                >
+                    <i class="bi bi-arrow-counterclockwise text-danger"></i>
+                    <span>Reset Prototype</span>
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TEACHER DASHBOARD
+    ====================================================== -->
+    <section id="teacherScreen" class="screen hidden">
+
+        <!-- Header Dashboard Modern -->
+        <div class="teacher-dashboard-header mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="teacher-title-area">
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span class="eyebrow-pill mb-0">👨‍🏫 TEACHER CONTROL CENTER</span>
+                        <span class="badge-live-mini">● LIVE SESSION ACTIVE</span>
+                    </div>
+                    <h2 class="fw-bold mb-1" style="letter-spacing: -0.5px;">Dashboard Manajemen &amp; Monitoring</h2>
+                    <p class="muted mb-0">Kelola bank soal Subnetting, kustomisasi materi, dan pantau progres belajar siswa secara real-time.</p>
+                </div>
+
+                <button
+                    class="btn-soft d-flex align-items-center gap-2 px-3 py-2"
+                    onclick="showScreen('loginScreen')"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Keluar ke Portal Siswa</span>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Bar Menu / Tab Navigasi Modern (Segmented Control) -->
+        <div class="teacher-nav-tabs mb-4" id="teacherTabs">
+            <button class="btn-main active" onclick="switchTeacherTab('form', this)">
+                <span class="me-1">✍️</span> Kelola &amp; Buat Soal
+            </button>
+            <button class="btn-soft" onclick="switchTeacherTab('bank', this)">
+                <span class="me-1">📚</span> Bank Soal &amp; Filter
+            </button>
+            <button class="btn-soft" onclick="switchTeacherTab('stats', this)">
+                <span class="me-1">📊</span> Statistik &amp; Monitoring
+            </button>
+        </div>
+
+
+        <!-- ================= TAB 1: KELOLA SOAL ================= -->
+        <div id="teacherPane-form" class="teacher-pane">
+            <div class="cardx mb-4 shadow-sm" id="questionFormCard">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3 border-bottom border-secondary border-opacity-25">
+                    <div>
+                        <h4 id="questionFormTitle" class="mb-1 fw-bold">
+                            ➕ Tambah Soal Baru
+                        </h4>
+                        <p class="muted mb-0 small">
+                            Buat soal Subnetting interaktif berdasarkan World dan Level pembelajaran.
+                        </p>
+                    </div>
+                    <button
+                        class="btn-soft btn-sm"
+                        type="button"
+                        onclick="resetQuestionForm()"
+                    >
+                        🔄 Reset Form
+                    </button>
+                </div>
+
+                <form id="teacherQuestionForm" class="mt-4">
+                    <input type="hidden" id="editQuestionId">
+
+                    <div class="row g-3">
+                        <!-- World / Materi -->
+                        <div class="col-md-6">
+                            <label class="form-label" for="questionWorld">World / Materi Utama</label>
+                            <select id="questionWorld" class="form-select" required>
+                                <option value="1">World 1 — Fondasi &amp; Anatomi IPv4</option>
+                                <option value="2">World 2 — Subnet Mask &amp; Notasi CIDR</option>
+                                <option value="3">World 3 — Perhitungan Subnetting Dasar</option>
+                            </select>
+                        </div>
+
+                        <!-- Level Game -->
+                        <div class="col-md-3">
+                            <label class="form-label" for="questionLevel">Level Game</label>
+                            <select id="questionLevel" class="form-select" required>
+                                <optgroup label="World 1 — Fondasi &amp; Anatomi IPv4">
+                                    <option value="1">Level 1 — Konsep Dasar Bit &amp; Oktet</option>
+                                    <option value="2">Level 2 — Struktur &amp; Validasi Alamat IP</option>
+                                    <option value="3">Level 3 — Pengenalan Jenis IP (Public/Private)</option>
+                                    <option value="4">Level 4 — Network ID &amp; Host ID</option>
+                                    <option value="5">Level 5 — Identifikasi Batas Alamat</option>
+                                </optgroup>
+                                <optgroup label="World 2 — Subnet Mask &amp; Notasi CIDR">
+                                    <option value="6">Level 6 — Fungsi Dasar Subnet Mask</option>
+                                    <option value="7">Level 7 — Biner &amp; Desimal Subnet Mask</option>
+                                    <option value="8">Level 8 — Pengenalan Notasi Prefix (/CIDR)</option>
+                                    <option value="9">Level 9 — Hubungan Prefix &amp; Sisa Bit Host</option>
+                                    <option value="10">Level 10 — Menentukan Ukuran Blok Subnet</option>
+                                </optgroup>
+                                <optgroup label="World 3 — Perhitungan Subnetting Dasar">
+                                    <option value="11">Level 11 — Rumus Dasar Jumlah Subnet (2ⁿ)</option>
+                                    <option value="12">Level 12 — Rumus Host Usable (2ʰ - 2)</option>
+                                    <option value="13">Level 13 — Menentukan Network ID Subnet</option>
+                                    <option value="14">Level 14 — Menentukan Broadcast ID Subnet</option>
+                                    <option value="15">Level 15 — Simulasi Subnetting Dasar (/26 &amp; /27)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <!-- Difficulty -->
+                        <div class="col-md-3">
+                            <label class="form-label" for="questionDifficulty">Tingkat Kesulitan</label>
+                            <select id="questionDifficulty" class="form-select" required>
+                                <option value="Mudah">🟢 Mudah</option>
+                                <option value="Sedang" selected>🟡 Sedang</option>
+                                <option value="Sulit">🔴 Sulit</option>
+                            </select>
+                        </div>
+
+                        <!-- Question -->
+                        <div class="col-12">
+                            <label class="form-label" for="questionText">Pertanyaan / Perintah Soal</label>
+                            <textarea id="questionText" class="form-control" rows="3" placeholder="Contoh: Berapa jumlah host yang dapat digunakan pada jaringan /26?" required></textarea>
+                        </div>
+
+                        <!-- Legacy Options -->
+                        <div class="col-md-6">
+                            <label class="form-label" for="questionOption0">Pilihan A</label>
+                            <input id="questionOption0" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="questionOption1">Pilihan B</label>
+                            <input id="questionOption1" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="questionOption2">Pilihan C</label>
+                            <input id="questionOption2" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="questionOption3">Pilihan D</label>
+                            <input id="questionOption3" class="form-control" required>
+                        </div>
+
+                        <!-- Answer -->
+                        <div class="col-md-4">
+                            <label class="form-label" for="questionAnswer">Kunci Jawaban Benar</label>
+                            <select id="questionAnswer" class="form-select" required>
+                                <option value="0">A</option>
+                                <option value="1">B</option>
+                                <option value="2">C</option>
+                                <option value="3">D</option>
+                            </select>
+                        </div>
+
+                        <!-- Explanation -->
+                        <div class="col-12">
+                            <label class="form-label" for="questionExplanation">Pembahasan / Feedback Edukatif</label>
+                            <textarea id="questionExplanation" class="form-control" rows="3" placeholder="Jelaskan konsep atau langkah perhitungan subnetting yang benar agar siswa memahami materinya." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap mt-4 pt-3 border-top border-secondary border-opacity-25">
+                        <button type="submit" class="btn-main px-4" id="saveQuestionBtn">💾 Simpan Soal</button>
+                        <button type="button" class="btn-soft" onclick="previewTeacherQuestion()">👁️ Preview Soal</button>
+                        <button type="button" class="btn-soft text-danger hidden" id="cancelEditBtn" onclick="resetQuestionForm()">Batal Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- ================= TAB 2: BANK SOAL ================= -->
+        <div id="teacherPane-bank" class="teacher-pane hidden">
+            <div class="cardx mb-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <h4 class="mb-0 fw-bold">📚 Bank Soal Subnetting</h4>
+                    <span class="muted small">Kelola, cari, dan filter seluruh basis data soal</span>
+                </div>
+
+                <!-- Filter Toolbar Modern -->
+                <div class="teacher-filter-toolbar p-3 rounded-4 mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small" for="questionSearch">Cari Pertanyaan / Kata Kunci</label>
+                            <div class="input-group teacher-search-box">
+                                <span class="input-group-text border-0 bg-transparent text-muted ps-3 pe-2">🔍</span>
+                                <input id="questionSearch" class="form-control border-0 bg-transparent shadow-none text-white ps-1" placeholder="Ketik kata kunci soal, jawaban, atau pembahasan..." oninput="renderTeacherQuestions()">
+                            </div>
+                        </div>
+
+                        <!-- Filter World -->
+                        <div class="col-md-6">
+                            <label class="form-label small" for="filterQuestionWorld">Filter World</label>
+                            <select id="filterQuestionWorld" class="form-select" onchange="renderTeacherQuestions()">
+                                <option value="">Semua World</option>
+                                <option value="1">World 1 — Fondasi &amp; Anatomi IPv4</option>
+                                <option value="2">World 2 — Subnet Mask &amp; Notasi CIDR</option>
+                                <option value="3">World 3 — Perhitungan Subnetting Dasar</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Level -->
+                        <div class="col-md-4">
+                            <label class="form-label small" for="filterQuestionLevel">Filter Level</label>
+                            <select id="filterQuestionLevel" class="form-select" onchange="renderTeacherQuestions()">
+                                <option value="">Semua Level</option>
+                                <optgroup label="World 1 — Fondasi &amp; Anatomi IPv4">
+                                    <option value="1">Level 1 — Konsep Dasar Bit &amp; Oktet</option>
+                                    <option value="2">Level 2 — Struktur &amp; Validasi Alamat IP</option>
+                                    <option value="3">Level 3 — Pengenalan Jenis IP (Public/Private)</option>
+                                    <option value="4">Level 4 — Network ID &amp; Host ID</option>
+                                    <option value="5">Level 5 — Identifikasi Batas Alamat</option>
+                                </optgroup>
+                                <optgroup label="World 2 — Subnet Mask &amp; Notasi CIDR">
+                                    <option value="6">Level 6 — Fungsi Dasar Subnet Mask</option>
+                                    <option value="7">Level 7 — Biner &amp; Desimal Subnet Mask</option>
+                                    <option value="8">Level 8 — Pengenalan Notasi Prefix (/CIDR)</option>
+                                    <option value="9">Level 9 — Hubungan Prefix &amp; Sisa Bit Host</option>
+                                    <option value="10">Level 10 — Menentukan Ukuran Blok Subnet</option>
+                                </optgroup>
+                                <optgroup label="World 3 — Perhitungan Subnetting Dasar">
+                                    <option value="11">Level 11 — Rumus Dasar Jumlah Subnet (2ⁿ)</option>
+                                    <option value="12">Level 12 — Rumus Host Usable (2ʰ - 2)</option>
+                                    <option value="13">Level 13 — Menentukan Network ID Subnet</option>
+                                    <option value="14">Level 14 — Menentukan Broadcast ID Subnet</option>
+                                    <option value="15">Level 15 — Simulasi Subnetting Dasar (/26 &amp; /27)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small" for="filterQuestionDifficulty">Filter Kesulitan</label>
+                            <select id="filterQuestionDifficulty" class="form-select" onchange="renderTeacherQuestions()">
+                                <option value="">Semua Kesulitan</option>
+                                <option value="Mudah">Mudah</option>
+                                <option value="Sedang">Sedang</option>
+                                <option value="Sulit">Sulit</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small" for="filterQuestionType">Filter Jenis Soal</label>
+                            <select id="filterQuestionType" class="form-select" onchange="renderTeacherQuestions()">
+                                <option value="">Semua Jenis Soal</option>
+                                <option value="mcq">Pilihan Ganda</option>
+                                <option value="short">Isian Singkat / Perhitungan</option>
+                                <option value="drag">Drag-and-Drop / Urutkan</option>
+                                <option value="config">Melengkapi Konfigurasi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="teacherQuestionList"></div>
+            </div>
+        </div>
+
+
+        <!-- ================= TAB 3: STATISTIK & MONITORING ================= -->
+        <div id="teacherPane-stats" class="teacher-pane hidden">
+            <!-- Statistik Atas (KPI Metric Cards) -->
+            <div class="teacher-stats mb-4">
+                <div class="stat kpi-card">
+                    <small>TOTAL SOAL</small>
+                    <b id="teacherTotalQuestions" class="text-cyan mono-num">0</b>
+                    <span class="kpi-sub">Database aktif</span>
+                </div>
+                <div class="stat kpi-card">
+                    <small>WORLD TERISI</small>
+                    <b id="teacherTotalWorlds" class="text-green mono-num">0</b>
+                    <span class="kpi-sub">Dari 3 World Utama</span>
+                </div>
+                <div class="stat kpi-card">
+                    <small>LEVEL TERISI</small>
+                    <b id="teacherTotalLevels" class="text-yellow mono-num">0</b>
+                    <span class="kpi-sub">Dari 15 Level</span>
+                </div>
+                <div class="stat kpi-card">
+                    <small>SOAL TERDAFTAR</small>
+                    <b id="teacherCustomQuestions" class="text-pink mono-num">0</b>
+                    <span class="kpi-sub">Kustom &amp; bawaan</span>
+                </div>
+            </div>
+
+            <!-- Level Statistics -->
+            <div class="cardx mb-4 shadow-sm">
+                <h4 class="fw-bold mb-1">📊 Distribusi Soal per Level</h4>
+                <p class="muted small mb-3">Jumlah soal yang tersedia pada masing-masing level.</p>
+                <div id="teacherLevelStats" class="teacher-level-stats"></div>
+            </div>
+
+            <!-- Student Monitoring -->
+            <div class="cardx shadow-sm">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                    <div>
+                        <h4 class="fw-bold mb-1">📈 Monitoring Aktivitas Siswa</h4>
+                        <p class="muted small mb-0">Rekapitulasi progres level, skor total, dan akurasi sesi aktif siswa.</p>
+                    </div>
+                </div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead>
+                            <tr style="font-size: 13px; color: var(--cyan);">
+                                <th>Siswa</th>
+                                <th>Progress Level</th>
+                                <th>Score Total</th>
+                                <th>Akurasi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="teacherStudent" class="fw-semibold">-</td>
+                                <td id="teacherProgress" class="mono-num">-</td>
+                                <td id="teacherScore" class="text-cyan fw-bold mono-num">-</td>
+                                <td id="teacherAcc" class="mono-num">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     TEACHER PREVIEW MODAL
+====================================================== -->
+<div class="modal fade" id="teacherPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-card">
+            <div class="modal-body p-4">
+                <span class="eyebrow-pill">
+                    <span>👁️ PREVIEW SOAL</span>
+                </span>
+                <div id="teacherPreviewContent" class="mt-3"></div>
+                <button class="btn-soft w-100 mt-3" data-bs-dismiss="modal">
+                    Tutup Preview
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     GAME ALERT MODAL (KUSTOM)
+====================================================== -->
+<div class="modal fade" id="gameAlertModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-card">
+            <div class="modal-body p-4 text-center">
+                <div class="modal-icon-circle warning mx-auto mb-2">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h4 class="mt-2 fw-bold" id="gameAlertTitle">
+                    Perhatian
+                </h4>
+                <p class="muted mb-4" id="gameAlertMessage">
+                    Pesan notifikasi...
+                </p>
+                <button class="btn-main w-100" type="button" data-bs-dismiss="modal">
+                    Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     TEACHER PIN MODAL (KUSTOM)
+====================================================== -->
+<div class="modal fade" id="teacherPinModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-card">
+            <div class="modal-body p-4 text-center">
+                <div class="modal-icon-circle cyan mx-auto mb-2">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h4 class="mt-2 fw-bold">
+                    Masukkan PIN Akses Guru
+                </h4>
+                <p class="muted mb-3">
+                    Silakan masukkan PIN rahasia untuk masuk ke Mode Guru.
+                </p>
+                <input
+                    type="password"
+                    id="teacherPinInput"
+                    inputmode="numeric"
+                    autofocus
+                    class="form-control mb-2 text-center mono-num"
+                    placeholder="••••••"
+                    autocomplete="current-password"
+                    style="letter-spacing: 6px; font-size: 22px;"
+                    onkeydown="if(event.key === 'Enter') verifyTeacherPin()"
+                >
+                <small id="pinError" class="text-danger hidden d-block mb-3">
+                    ❌ PIN salah! Akses ditolak.
+                </small>
+                <div class="d-flex gap-2 justify-content-center mt-3">
+                    <button class="btn-main w-50" type="button" onclick="verifyTeacherPin()">
+                        Masuk
+                    </button>
+                    <button class="btn-soft w-50" type="button" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     QUESTION MODAL
+====================================================== -->
+<div class="modal fade" id="questionModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-card">
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="eyebrow-pill mb-0">
+                        <span>🧠 QUESTION ITEM • SUBNETTING</span>
+                    </span>
+                    <span class="mono-tag">QUIZ CHALLENGE</span>
+                </div>
+                <h4 id="qText" class="mt-3 fw-bold" style="line-height: 1.45;"></h4>
+                <div id="qOptions" class="mt-3"></div>
+                <div id="qFeedback"></div>
+                <button
+                    id="qContinue"
+                    class="btn-main w-100 mt-3 hidden"
+                    onclick="closeQuestion()"
+                >
+                    Lanjutkan Game →
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     LEVEL RESULT MODAL
+====================================================== -->
+<div class="modal fade" id="levelModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-card">
+            <div class="modal-body p-4 text-center">
+                <div style="font-size: 64px; line-height: 1.1;">
+                    🎉
+                </div>
+                <h2 id="levelResultTitle" class="fw-bold mt-2">
+                    LEVEL COMPLETE!
+                </h2>
+                <p id="levelResultText" class="muted"></p>
+                <button id="nextLevelBtn" class="btn-main w-100 mt-2">
+                    Lanjut
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
